@@ -2,7 +2,7 @@
 # visit http://127.0.0.1:8050/ in your web browser.
 
 
-from dash import Dash, html, dcc
+from dash import Dash, html, dcc, Input, Output
 import plotly.express as px
 import pandas as pd
 import csv
@@ -53,6 +53,8 @@ with open(os.path.join(dir, 'data' ,'daily_sales_data_0.csv')) as csv_file1, ope
     readfile(csv_reader3)
 
 
+
+
 app = Dash()
 
 # assume you have a "long-form" data frame
@@ -65,17 +67,44 @@ df = pd.DataFrame({
 
 fig = px.line(df, x="Date", y="Sales", color="Region")
 
-app.layout = html.Div(children=[
+@app.callback (
+    Output('example-graph', 'figure'),
+    Input('RegionFilter', 'value')
+)
+
+def updateGraph(selectedRegion):
+    if selectedRegion == 'All':
+        dffilter = df
+    else: 
+        dffilter = df[df['Region'] == selectedRegion]
+    return(px.line(dffilter, x="Date", y="Sales", color="Region"))
+
+# north: #616efb
+# east: #62d5ae
+# south: #f17c5f
+# west: #a964f8
+    
+
+
+app.layout = html.Div( className="appheader", children=[
     html.H1(children='Hello Dash'),
 
     html.Div(children='''
         Dash: A web application framework for your data.
     '''),
 
-    dcc.Graph(
+    dcc.Graph( style={'backgroundColor':'black'},
         id='example-graph',
         figure=fig
-    )
+    ),
+
+    dcc.RadioItems(
+        id= "RegionFilter",
+
+        options=['north', 'east', 'south', 'west', 'All'],
+        value = 'All'
+    ),
+
 ])
 
 if __name__ == '__main__':
