@@ -2,7 +2,7 @@
 # visit http://127.0.0.1:8050/ in your web browser.
 
 
-from dash import Dash, html, dcc, Input, Output
+from dash import Dash, html, dcc, Input, Output, callback, ctx
 import plotly.express as px
 import pandas as pd
 import csv
@@ -87,13 +87,13 @@ def updateGraph(selectedRegion):
 
 
 app.layout = html.Div( className="appheader", children=[
-    html.H1(children='Hello Dash'),
+    html.H1(children='Pink morsel data'),
 
     html.Div(children='''
-        Dash: A web application framework for your data.
+        Showing sales of pink morsel product from 2018-2022
     '''),
 
-    dcc.Graph( style={'backgroundColor':'black'},
+    dcc.Graph(
         id='example-graph',
         figure=fig
     ),
